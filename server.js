@@ -136,13 +136,13 @@ app.get("/scrape", function (req, res) {
       var title = $(element).children("span").text();
       var link = $(element).attr("href");
 
-    
+
       // If this found element had both a title and a link
       if (title && link) {
         // Insert the data in the scrapedData db
         db.Article.create({
           // photo: photo,
-        title, link
+          title, link
           // byline: byline
         },
           function (err, inserted) {
@@ -170,7 +170,7 @@ app.get("/scrape", function (req, res) {
         // Insert the data in the scrapedData db
         db.Article.create({
           // photo: photo,
-         photoLink
+          photoLink
 
           // byline: byline
         },
@@ -201,15 +201,13 @@ app.get("/scrape", function (req, res) {
 // Route for getting all Articles from the db
 app.get("/articles", function (req, res) {
 
-  db.Article.find({}), function (error, found) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      res.json(dbArticle)
-
-    }
-  }
+  db.Article.find({})
+    .then(function (allArticles) {
+      res.json(allArticles);
+    })
+    .catch(function (err) {
+      res.json(err)
+    });
 });
 
 
