@@ -33,21 +33,12 @@ app.use(bodyParser.urlencoded({
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 // Make public a static folder
-app.use(express.static("views"));
+app.use(express.static("public"));
 
 app.engine("handlebars", exphbs({ defaultLayout: "main" }));
 app.set("view engine", "handlebars");
 
 
-
-// var databaseUrl = "Mongoose_NewsApp";
-// var collections = ["scraperData"];
-
-// // Hook mongojs configuration to the db variable
-// var db = mongojs(databaseUrl, collections);
-// db.on("error", function (error) {
-//   console.log("Database Error:", error);
-// });
 
 // Require all models
 var db = require("./models");
@@ -67,38 +58,9 @@ mongoose.connect("mongodb://localhost/Mongoose_NewsApp", { useNewUrlParser: true
 var PORT = process.env.PORT || 3000;
 
 
-
-
-// Connect to the Mongo DB
-// mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
-
-// // Routes
-
-// var router = express.Router();
-
-// Data
-// var lunches = [
-//   {
-//     lunch: "Beet & Goat Cheese Salad with minestrone soup."
-//   }, {
-//     lunch: "Pizza, two double veggie burgers, fries with a Big Gulp"
-//   }
-// ];
-
-// app.get("/home", function (req, res) {
-
-//   // Burger.all(function (data) {
-//   //   var hbsObject = {
-//   //     burgers: data
-//   //   };
-
-//     res.render("index", lunches[0]);
-//   });
-// });
-
 // Main route (simple Hello World Message)
 app.get("/", function (req, res) {
-  res.send("Hello world");
+  res.render("index");
   // You will put index.handlebars in send
 });
 
@@ -142,9 +104,12 @@ app.get("/scrape", function (req, res) {
         // Insert the data in the scrapedData db
         db.Article.create({
           // photo: photo,
-          title, link
+          title: title,
+          link: link
           // byline: byline
-        },
+        }
+
+          ,
           function (err, inserted) {
             if (err) {
               // Log the error if one is encountered during the query
@@ -155,6 +120,8 @@ app.get("/scrape", function (req, res) {
               console.log(inserted);
             }
           });
+      } else if (!title && !link) {
+        console.log(err)
       }
 
       // db.Article.create(result)
@@ -170,7 +137,7 @@ app.get("/scrape", function (req, res) {
         // Insert the data in the scrapedData db
         db.Article.create({
           // photo: photo,
-          photoLink
+          photoLink: photoLink
 
           // byline: byline
         },
@@ -233,25 +200,6 @@ app.listen(PORT, function () {
 });
 
 
-
-
-
-
-// Configure middleware
-
-// Use morgan logger for logging requests
-// app.use(logger("dev"));
-
-
-// Make public a static folder
-// app.use(express.static("public"));
-
-
-
-// Connect to the Mongo DB
-// mongoose.connect("mongodb://localhost/unit18Populater", { useNewUrlParser: true });
-// var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoosenewsapp";
-// mongoose.connect(MONGODB_URI);
 
 
 
