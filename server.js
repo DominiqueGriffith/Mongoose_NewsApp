@@ -44,7 +44,7 @@ app.set("view engine", "handlebars");
 var db = require("./models");
 
 // Connect to the Mongo DB
-mongoose.connect("mongodb://localhost/Mongoose_NewsApp", { useNewUrlParser: true });
+mongoose.connect("mongodb://localhost/HeadlineAppMongoose", { useNewUrlParser: true });
 // Show any mongoose errors
 
 
@@ -86,72 +86,63 @@ app.get("/scrape", function (req, res) {
     // Load the html body from axios into cheerio
     var $ = cheerio.load(response.data);
     // For each element with a "title" class
-    //     $(".ImageModule").each(function(i,element){
-    // var photo = $(element).children("img").attr("src");
-    //    });
+        $(".ImageModule").each(function(i,element){
+    var photo = $(element).children("img").attr("src");
+       });
 
     $("a.headline-link").each(function (i, element) {
       // var photoParsing = $("picture._1j0xu");
       // var photo = $(element, photoParsing).children("img").attr();
       // var byline = $(element).children("span").text();
       // var titleAndLink = $("h2.HeadlineModule");
-      var title = $(element).children("span").text();
-      var link = $(element).attr("href");
+       
+      // Save an empty result object
+       var result = {};
+
+       result.title = $(this)
+       .children("span")
+       .text();
+       result.link = $(this)
+       .attr("href");
 
 
       // If this found element had both a title and a link
-      if (title && link) {
+      // if (title && link) {
         // Insert the data in the scrapedData db
-        db.Article.create({
-          // photo: photo,
-          title: title,
-          link: link
-          // byline: byline
-        }
-
-          ,
-          function (err, inserted) {
-            if (err) {
-              // Log the error if one is encountered during the query
-              console.log(err);
-            }
-            else {
-              // Otherwise, log the inserted data
-              console.log(inserted);
-            }
-          });
-      } else if (!title && !link) {
-        console.log(err)
-      }
-
-      // db.Article.create(result)
-    });
-
+           // Create a new Article using the `result` object built from scraping
+      db.Article.create(result)
+      .then(function(dbArticle) {
+        // View the added result in the console
+        console.log(dbArticle);
+      })
+      .catch(function(err) {
+        // If an error occurred, log it
+        console.log(err);
+      });
+       
+      });
     $(".teaser__image").each(function (i, element) {
       // var photoParsing = $("picture._1j0xu");
-      var photoLink = $(element).find("img").attr("srcset").split(",")[0].split(" ")[0];
 
+      var resultsTwo = {};
 
-      // If this found element had both a title and a link
-      if (photoLink) {
-        // Insert the data in the scrapedData db
-        db.Article.create({
-          // photo: photo,
-          photoLink: photoLink
+     
+       resultsTwo.photoLink = $(this)
+      .find("img")
+      .attr("srcset")
+      .split(",")[0].split(" ")[0];
 
-          // byline: byline
-        },
-          function (err, inserted) {
-            if (err) {
-              // Log the error if one is encountered during the query
-              console.log(err);
-            }
-            else {
-              // Otherwise, log the inserted data
-              console.log(inserted);
-            }
-          });
-      }
+      db.Article.create(resultsTwo)
+      .then(function(dbArticle) {
+        // View the added result in the console
+        console.log(dbArticle);
+      })
+      .catch(function(err) {
+        // If an error occurred, log it
+        console.log(err);
+      });
+
+      
     });
 
 
@@ -189,7 +180,7 @@ app.get("/articles", function (req, res) {
 // app.use(routes);
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/HeadlineAppMongoose";
 
 mongoose.connect(MONGODB_URI);
 
