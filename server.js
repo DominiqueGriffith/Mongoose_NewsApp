@@ -168,6 +168,49 @@ app.get("/articles", function (req, res) {
     });
 });
 
+// Route for grabbing a specific Article by id, populate it with it's note
+app.get("/articles/:id", function(req, res) {
+  
+  db.Article.update(
+    {
+      _id: mongojs.ObjectId(req.params.id)
+
+    },
+    
+    
+  )
+  .populate("note")
+  .then(function (dbArticle) {
+    res.json(dbArticle);
+  })
+  .catch(function (err) {
+    res.json(err);
+  });
+ 
+});
+// Route for saving/updating an Article's associated Note
+app.post("/articles/:id", function(req, res) {
+  db.Note.save(req.body, function (error, saved) {
+    if (error) {
+      console.log(error);
+    }
+    else {
+      res.send(saved)
+    }
+  
+    db.Article.find(
+      {
+        _id: mongojs.ObjectId(req.params.id)
+  
+      },
+      
+      
+    )
+  });
+
+});
+
+
 
 
 
