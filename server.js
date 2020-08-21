@@ -218,40 +218,6 @@ app.post("/articles/:id", function(req, res) {
 
 });
 
-// Route for saving/updating an Article
-// app.post("/articles/:id", function(req, res) {
-//   db.Article.save(req.body, function (error, saved) {
-//     if (error) {
-//       console.log(error);
-//     }
-//     else {
-//       res.send(saved)
-//     }
-  
-//     db.Article.find(
-//       {
-//         _id: mongojs.ObjectId(req.params.id)
-  
-//       },
-      
-      
-//     )
-//   });
-
-// });
-
-
-
-
-
-
-// Import routes and give the server access to them.
-// var routes = require("./controllers/mongooseNewsApp_Controllers.js");
-
-
-
-
-// app.use(routes);
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
 var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/HeadlineAppMongoose";
