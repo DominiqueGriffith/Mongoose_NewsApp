@@ -171,7 +171,7 @@ app.get("/articles", function (req, res) {
 // Route for grabbing a specific Article by id, populate it with it's note
 app.get("/articles/:id", function(req, res) {
   
-  db.Article.update(
+  db.Article.updateOne(
     {
       _id: mongojs.ObjectId(req.params.id)
 
@@ -179,18 +179,21 @@ app.get("/articles/:id", function(req, res) {
     
     
   )
-  .populate("note")
-  .then(function (dbArticle) {
-    res.json(dbArticle);
-  })
-  .catch(function (err) {
-    res.json(err);
-  });
- 
+ db.Article.findOne(
+   {
+  _id: mongojs.ObjectId(req.params.id)
+   },
+ ) .populate("note")
+ .then(function (dbArticle) {
+   res.json(dbArticle);
+ })
+ .catch(function (err) {
+   res.json(err);
+ });
 });
 // Route for saving/updating an Article's associated Note
 app.post("/articles/:id", function(req, res) {
-  db.Note.save(req.body, function (error, saved) {
+  db.Note.create(req.body, function (error, saved) {
     if (error) {
       console.log(error);
     }
@@ -198,17 +201,45 @@ app.post("/articles/:id", function(req, res) {
       res.send(saved)
     }
   
-    db.Article.find(
+    db.Article.findOne(
       {
         _id: mongojs.ObjectId(req.params.id)
   
       },
+      db.Article.updateOne(
+        {
+          _id: mongojs.ObjectId(req.params.id)
+        }
+      )
       
       
     )
   });
 
 });
+
+// Route for saving/updating an Article
+// app.post("/articles/:id", function(req, res) {
+//   db.Article.save(req.body, function (error, saved) {
+//     if (error) {
+//       console.log(error);
+//     }
+//     else {
+//       res.send(saved)
+//     }
+  
+//     db.Article.find(
+//       {
+//         _id: mongojs.ObjectId(req.params.id)
+  
+//       },
+      
+      
+//     )
+//   });
+
+// });
+
 
 
 

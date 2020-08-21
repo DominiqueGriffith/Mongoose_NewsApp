@@ -1,6 +1,4 @@
-h2:hover {  cursor: pointer;
-}
 
-p:hover {
-    cursor: pointer;
+.col-md-2{
+    border: solid black;
 }
