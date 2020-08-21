@@ -220,7 +220,8 @@ app.post("/articles/:id", function(req, res) {
 
 
 // If deployed, use the deployed database. Otherwise use the local mongoHeadlines database
-var MONGODB_URI = process.env.MONGODB_URI || "mongodb://localhost/HeadlineAppMongoose";
+var MONGODB_URI = process.env.MONGODB_URI ||
+"mongodb://dg8575a:Neptune998823@ds329058.mlab.com:29058/heroku_fwjppd7q";
 
 mongoose.connect(MONGODB_URI);
 
